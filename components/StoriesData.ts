@@ -1,7 +1,7 @@
 export interface IStoriesData {
   name: string;
   src: string;
-  profile: string;
+  profile?: string;
 }
 const storiesData: IStoriesData[] = [
   {
@@ -12,7 +12,6 @@ const storiesData: IStoriesData[] = [
   {
     name: "Jeff Bezoz",
     src: "https://links.papareact.com/k2j",
-    profile: "https://links.papareact.com/f0p",
   },
   {
     name: "Mark Zukerberg",
@@ -26,3 +25,5 @@ const storiesData: IStoriesData[] = [
   },
 ];
 export default storiesData;
+
+// profile: "https://links.papareact.com/f0p",

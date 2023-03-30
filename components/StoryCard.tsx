@@ -20,17 +20,20 @@ const StoryCard = ({ data: { name, src, profile } }: IProps) => {
           width={300}
           height={300}
           alt={name}
+          priority
         />
       </figure>
-      <figure className="absolute top-2 left-2 hidden md:block">
-        <Image
-          src={profile}
-          alt={name}
-          width={40}
-          height={40}
-          className="rounded-full object-cover object-top w-8 h-8"
-        />
-      </figure>
+      {profile && (
+        <figure className="absolute top-2 left-2 hidden md:block">
+          <Image
+            src={profile}
+            alt={name}
+            width={50}
+            height={50}
+            className="rounded-full object-cover object-top w-10 h-10 border-[3px] border-primary"
+          />
+        </figure>
+      )}
       <p className="absolute bottom-3 left-3 text-white font-semibold hidden md:block">
         {name}
       </p>
