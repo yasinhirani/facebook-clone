@@ -23,7 +23,7 @@ const Header = () => {
               alt="Facebook"
             />
           </figure>
-          <div className="bg-gray-100 rounded-full w-56 flex items-center space-x-3 px-3 py-2">
+          <div className="bg-gray-100 rounded-full w-44 xs:w-56 flex items-center space-x-3 px-3 py-2">
             <MagnifyingGlassIcon className="w-5 h-5" />
             <input
               className="w-full bg-transparent outline-none placeholder:text-gray-500"
@@ -36,7 +36,7 @@ const Header = () => {
         </div>
         {/* End Brand Logo and search bar */}
         {/* Start NavLinks */}
-        <div className="flex items-center space-x-10">
+        <div className="items-center space-x-10 hidden md:flex">
           <HomeIcon className="w-6 h-6 text-primary" />
           <FlagIcon className="w-6 h-6 text-gray-500" />
           <PlayCircleIcon className="w-6 h-6 text-gray-500" />
@@ -55,7 +55,7 @@ const Header = () => {
               alt="User"
             />
           </figure>
-          <h5 className="font-semibold">Yasin Hirani</h5>
+          <h5 className="font-semibold hidden lg:block">Yasin Hirani</h5>
         </div>
         {/* End Profile */}
       </div>

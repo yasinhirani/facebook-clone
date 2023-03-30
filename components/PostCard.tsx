@@ -1,7 +1,16 @@
+import { HandThumbUpIcon } from "@heroicons/react/24/outline";
+import { HandThumbUpIcon as HandThumbUpIconSolid } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import React from "react";
 
-const PostCard = ({ image }: any) => {
+interface IProps {
+  image: string;
+  isLiked: boolean;
+  likePost: (index: number) => void;
+  index: number;
+}
+
+const PostCard = ({ image, isLiked, likePost, index }: IProps) => {
   return (
     <div className="bg-white rounded-xl shadow-md p-4">
       <div className="flex items-center space-x-3">
@@ -21,16 +30,33 @@ const PostCard = ({ image }: any) => {
       </div>
       <p className="my-3 font-semibold">Whats up guys</p>
       {image && (
-        <figure>
+        <figure className="mb-3">
           <Image
             src={image}
             width={500}
             height={500}
-            className="w-full h-96 object-cover"
+            className="w-full h-auto sm:h-96 object-cover"
             alt=""
           />
         </figure>
       )}
+      <hr />
+      <div className="flex items-center mt-3">
+        <button
+          type="button"
+          onClick={() => likePost(index)}
+          className={`${
+            isLiked ? "text-primary" : "text-gray-500"
+          } flex items-center space-x-2`}
+        >
+          {isLiked ? (
+            <HandThumbUpIconSolid className="w-5 h-5" />
+          ) : (
+            <HandThumbUpIcon className="w-5 h-5" />
+          )}
+          <span className="text-sm font-medium">Like</span>
+        </button>
+      </div>
     </div>
   );
 };

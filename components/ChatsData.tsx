@@ -1,6 +1,6 @@
 interface IChatsData {
   name: string;
-  profile: string;
+  profile?: string;
 }
 
 const chatsData: IChatsData[] = [
@@ -10,7 +10,6 @@ const chatsData: IChatsData[] = [
   },
   {
     name: "Jeff Bezoz",
-    profile: "https://links.papareact.com/f0p",
   },
   {
     name: "Mark Zukerberg",
