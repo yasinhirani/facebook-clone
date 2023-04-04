@@ -19,6 +19,7 @@ interface IPosts {
   imageURL: string;
   likeCount: number;
   likedBy: [];
+  createdAt: Date;
 }
 
 const Feed = () => {
@@ -84,7 +85,7 @@ const Feed = () => {
     }
     await axios
       .post("http://localhost:8080/api/createPost", {
-        name: "Yasin Hirani",
+        name: authData?.userName,
         content: whatsOnYourMind,
         postId: uuidv4(),
         imageURL: postUrl && postUrl,
