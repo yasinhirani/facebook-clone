@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React from "react";
+import React, { useContext } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import {
   HomeIcon,
@@ -8,8 +8,10 @@ import {
   ShoppingCartIcon,
   UserGroupIcon,
 } from "@heroicons/react/24/outline";
+import AuthContext from "@/core/context";
 
 const Header = () => {
+  const { authData } = useContext(AuthContext);
   return (
     <div className="w-full fixed top-0 h-16 bg-white shadow-md z-10">
       <div className="w-full max-w-[80rem] mx-auto px-6 py-3 flex justify-between items-center">
@@ -55,7 +57,7 @@ const Header = () => {
               alt="User"
             />
           </figure>
-          <h5 className="font-semibold hidden lg:block">Yasin Hirani</h5>
+          <h5 className="font-semibold hidden lg:block">{authData?.userName}</h5>
         </div>
         {/* End Profile */}
       </div>
