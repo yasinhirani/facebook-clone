@@ -1,16 +1,52 @@
+import AuthContext from "@/core/context";
 import { HandThumbUpIcon } from "@heroicons/react/24/outline";
 import { HandThumbUpIcon as HandThumbUpIconSolid } from "@heroicons/react/24/solid";
+import axios from "axios";
+import moment from "moment";
 import Image from "next/image";
-import React from "react";
+import React, { useContext, useState } from "react";
 
 interface IProps {
-  image: string;
-  isLiked: boolean;
-  likePost: (index: number) => void;
-  index: number;
+  postData: {
+    name: string;
+    content: string;
+    userId: string;
+    postId: string;
+    imageURL: string;
+    likedBy: [];
+    createdAt: Date;
+  };
 }
 
-const PostCard = ({ image, isLiked, likePost, index }: IProps) => {
+const PostCard = ({
+  postData: { name, content, userId, postId, imageURL, likedBy, createdAt },
+}: IProps) => {
+  const { authData } = useContext(AuthContext);
+
+  const [liked, setIsLiked] = useState<boolean>(
+    likedBy.includes(authData?.userId as never)
+  );
+  const [likeCount, setLikeCount] = useState<number>(likedBy.length);
+
+  const handleLikeDislike = (userId: string | undefined, postId: string) => {
+    if (authData) {
+      if (liked) {
+        setLikeCount((prev) => prev - 1);
+      } else {
+        setLikeCount((prev) => prev + 1);
+      }
+      setIsLiked(!liked);
+      axios
+        .put("http://localhost:8080/api/likePost", {
+          userId,
+          postId,
+        })
+        .then((res) => {
+          console.log(res.data);
+        });
+    }
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-md p-4">
       <div className="flex items-center space-x-3">
@@ -24,38 +60,41 @@ const PostCard = ({ image, isLiked, likePost, index }: IProps) => {
           />
         </figure>
         <div className="flex flex-col">
-          <p className="font-semibold">Yasin Hirani</p>
-          <span className="text-xs text-gray-500">Date</span>
+          <p className="font-semibold">{name}</p>
+          <span className="text-xs text-gray-500 font-medium">
+            {moment(createdAt).fromNow()}
+          </span>
         </div>
       </div>
-      <p className="my-3 font-semibold">Whats up guys</p>
-      {image && (
+      <p className="my-3 font-semibold">{content}</p>
+      {imageURL && (
         <figure className="mb-3">
           <Image
-            src={image}
+            src={imageURL}
             width={500}
             height={500}
-            className="w-full h-auto sm:h-96 object-cover"
+            className="w-full h-auto sm:h-96 object-contain"
             alt=""
           />
         </figure>
       )}
       <hr />
-      <div className="flex items-center mt-3">
+      <div className="flex items-center space-x-3 mt-3">
         <button
           type="button"
-          onClick={() => likePost(index)}
+          onClick={() => handleLikeDislike(authData?.userId, postId)}
           className={`${
-            isLiked ? "text-primary" : "text-gray-500"
+            liked ? "text-primary" : "text-gray-500"
           } flex items-center space-x-2`}
         >
-          {isLiked ? (
+          {liked ? (
             <HandThumbUpIconSolid className="w-5 h-5" />
           ) : (
             <HandThumbUpIcon className="w-5 h-5" />
           )}
           <span className="text-sm font-medium">Like</span>
         </button>
+        <span className="font-semibold text-sm">{likeCount}</span>
       </div>
     </div>
   );

@@ -1,7 +1,31 @@
-import { Feed, Header, LeftSideBar,RightSideBar } from "../components/index";
+import { useEffect, useMemo, useState } from "react";
+import { Header, Homepage } from "../components/index";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { IAuthData } from "@/core/model/auth.model";
+import AuthContext from "@/core/context";
+import Interceptor from "@/core/service/interceptor";
 
 export default function Home() {
+  const [authData, setAuthData] = useState<IAuthData | null>(null);
+  const router = useRouter();
+
+  const AuthState = useMemo(
+    () => ({
+      authData,
+      setAuthData,
+    }),
+    [authData]
+  );
+
+  useEffect(() => {
+    if (!localStorage.authData) {
+      router.push("/login");
+    } else {
+      setAuthData(JSON.parse(localStorage.getItem("authData") as string));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <>
       <Head>
@@ -10,16 +34,15 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="w-full h-full flex flex-col relative">
-        <Header />
-        <div className="flex-grow mt-16 w-full flex flex-col relative bg-gray-100">
-          <div className="w-full max-w-[80rem] mx-auto flex-grow px-6 py-10 flex justify-between space-x-8 sm:space-x-10">
-            <LeftSideBar />
-            <Feed />
-            <RightSideBar />
+      {authData && (
+        <AuthContext.Provider value={AuthState}>
+          <div className="w-full h-full flex flex-col relative">
+            <Header />
+            <Homepage />
           </div>
-        </div>
-      </div>
+        </AuthContext.Provider>
+      )}
+      <Interceptor />
     </>
   );
 }
