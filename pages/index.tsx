@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Header, Homepage } from "../components/index";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -7,25 +7,26 @@ import AuthContext from "@/core/context";
 import Interceptor from "@/core/service/interceptor";
 
 export default function Home() {
-  const [authData, setAuthData] = useState<IAuthData | null>(null);
-  const router = useRouter();
+  const { authData } = useContext(AuthContext);
+  // const [authData, setAuthData] = useState<IAuthData | null>(null);
+  // const router = useRouter();
 
-  const AuthState = useMemo(
-    () => ({
-      authData,
-      setAuthData,
-    }),
-    [authData]
-  );
+  // const AuthState = useMemo(
+  //   () => ({
+  //     authData,
+  //     setAuthData,
+  //   }),
+  //   [authData]
+  // );
 
-  useEffect(() => {
-    if (!localStorage.authData) {
-      router.push("/login");
-    } else {
-      setAuthData(JSON.parse(localStorage.getItem("authData") as string));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   if (!localStorage.authData) {
+  //     router.push("/getStarted");
+  //   } else {
+  //     setAuthData(JSON.parse(localStorage.getItem("authData") as string));
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
   return (
     <>
       <Head>
@@ -35,14 +36,11 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {authData && (
-        <AuthContext.Provider value={AuthState}>
-          <div className="w-full h-full flex flex-col relative">
-            <Header />
-            <Homepage />
-          </div>
-        </AuthContext.Provider>
+        <div className="w-full h-full flex flex-col relative">
+          <Header />
+          <Homepage />
+        </div>
       )}
-      <Interceptor />
     </>
   );
 }

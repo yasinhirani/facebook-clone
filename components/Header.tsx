@@ -9,6 +9,7 @@ import {
   UserGroupIcon,
 } from "@heroicons/react/24/outline";
 import AuthContext from "@/core/context";
+import Link from "next/link";
 
 const Header = () => {
   const { authData } = useContext(AuthContext);
@@ -17,14 +18,16 @@ const Header = () => {
       <div className="w-full max-w-[80rem] mx-auto px-6 py-3 flex justify-between items-center">
         {/* Start Brand Logo and search bar */}
         <div className="flex items-center space-x-5">
-          <figure>
-            <Image
-              src="https://links.papareact.com/5me"
-              width={40}
-              height={40}
-              alt="Facebook"
-            />
-          </figure>
+          <Link href="/">
+            <figure>
+              <Image
+                src="https://links.papareact.com/5me"
+                width={40}
+                height={40}
+                alt="Facebook"
+              />
+            </figure>
+          </Link>
           <div className="bg-gray-100 rounded-full w-44 xs:w-56 flex items-center space-x-3 px-3 py-2">
             <MagnifyingGlassIcon className="w-5 h-5" />
             <input
@@ -47,18 +50,26 @@ const Header = () => {
         </div>
         {/* End NavLinks */}
         {/* Start Profile */}
-        <div className="flex items-center space-x-3">
+        <Link
+          href={{
+            pathname: "/userProfile",
+            query: { userId: authData?.userId },
+          }}
+          className="flex items-center space-x-3"
+        >
           <figure>
             <Image
-              src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"
+              src={authData?.avatar ? authData.avatar : "/images/no-avatar.png"}
               width={40}
               height={40}
-              className="rounded-full"
+              className="rounded-full w-9 h-9"
               alt="User"
             />
           </figure>
-          <h5 className="font-semibold hidden lg:block">{authData?.userName}</h5>
-        </div>
+          <h5 className="font-semibold hidden lg:block">
+            {authData?.userName}
+          </h5>
+        </Link>
         {/* End Profile */}
       </div>
     </div>

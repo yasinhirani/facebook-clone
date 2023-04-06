@@ -10,6 +10,7 @@ import { storage } from "./Firebase";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import AuthContext from "@/core/context";
+import Compressor from "compressorjs";
 
 interface IPosts {
   name: string;
@@ -20,6 +21,7 @@ interface IPosts {
   likeCount: number;
   likedBy: [];
   createdAt: Date;
+  avatar: string;
 }
 
 const Feed = () => {
@@ -38,16 +40,6 @@ const Feed = () => {
     }),
     [postButtonDisabled]
   );
-
-  // const likePost = (index: number) => {
-  //   const copyPosts = [...posts];
-  //   if (copyPosts[index].isLiked) {
-  //     copyPosts[index].isLiked = false;
-  //   } else {
-  //     copyPosts[index].isLiked = true;
-  //   }
-  //   setPosts(copyPosts);
-  // };
 
   const getAllPosts = () => {
     if (authData) {
@@ -76,29 +68,60 @@ const Feed = () => {
 
   const handleClick = async () => {
     let postUrl = "";
-    const storageRef = ref(storage, `posts/${selectedFile?.name}abc123`);
+    const storageRef = ref(
+      storage,
+      `posts/${selectedFile?.name}${authData?.userId}`
+    );
     if (selectedFile) {
-      await uploadBytes(storageRef, selectedFile).catch((err) => {
-        console.error(err);
+      new Compressor(selectedFile, {
+        maxWidth: 1000,
+        maxHeight: 1000,
+        quality: 0.8,
+        success: async (compressedResult) => {
+          await uploadBytes(storageRef, compressedResult).catch((err) => {
+            console.error(err);
+          });
+          postUrl = await getDownloadURL(storageRef);
+          await axios
+            .post("http://localhost:8080/api/createPost", {
+              name: authData?.userName,
+              content: whatsOnYourMind,
+              postId: uuidv4(),
+              imageURL: postUrl && postUrl,
+              likeCount: 0,
+              likedBy: [],
+              avatar: authData?.avatar,
+            })
+            .then((res) => {
+              console.log(res.data);
+              setWhatsOnYourMind("");
+              setSelectedFile(null);
+              setSelectedFilePreview("");
+              postButtonDisabledState.setPostButtonDisabled(true);
+              getAllPosts();
+            });
+        },
       });
-      postUrl = await getDownloadURL(storageRef);
+    } else {
+      await axios
+        .post("http://localhost:8080/api/createPost", {
+          name: authData?.userName,
+          content: whatsOnYourMind,
+          postId: uuidv4(),
+          imageURL: "",
+          likeCount: 0,
+          likedBy: [],
+          avatar: authData?.avatar,
+        })
+        .then((res) => {
+          console.log(res.data);
+          setWhatsOnYourMind("");
+          setSelectedFile(null);
+          setSelectedFilePreview("");
+          postButtonDisabledState.setPostButtonDisabled(true);
+          getAllPosts();
+        });
     }
-    await axios
-      .post("http://localhost:8080/api/createPost", {
-        name: authData?.userName,
-        content: whatsOnYourMind,
-        postId: uuidv4(),
-        imageURL: postUrl && postUrl,
-        likeCount: 0,
-        likedBy: [],
-      })
-      .then((res) => {
-        console.log(res.data);
-        setWhatsOnYourMind("");
-        setSelectedFile(null);
-        setSelectedFilePreview("");
-        getAllPosts();
-      });
   };
 
   useEffect(() => {
@@ -120,7 +143,7 @@ const Feed = () => {
         <div className="flex items-center space-x-6">
           <figure>
             <Image
-              src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"
+              src={authData?.avatar ? authData.avatar : "/images/no-avatar.png"}
               width={40}
               height={40}
               className="rounded-full"

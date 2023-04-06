@@ -5,6 +5,7 @@ export interface IAuthData {
   email: string;
   access_token: string;
   userId: string;
+  avatar: string;
 }
 
 export interface IAuthContext {
