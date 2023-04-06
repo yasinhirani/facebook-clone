@@ -23,7 +23,7 @@ const LeftSideBar = () => {
       <div className="flex items-center space-x-3">
         <figure>
           <Image
-            src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"
+            src={authData?.avatar ? authData.avatar : "/images/no-avatar.png"}
             width={30}
             height={30}
             className="rounded-full"
@@ -60,7 +60,8 @@ const LeftSideBar = () => {
         <button
           onClick={() => {
             setAuthData(null);
-            router.push("/login");
+            localStorage.removeItem("authData");
+            router.push("/getStarted");
           }}
           type="button"
           className="flex items-center space-x-3"
