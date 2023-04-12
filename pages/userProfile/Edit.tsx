@@ -4,7 +4,12 @@ import { Transition, Dialog } from "@headlessui/react";
 import { CameraIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import axios from "axios";
 import Compressor from "compressorjs";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
 import { Field, Form, Formik } from "formik";
 import Image from "next/image";
 import React, { Fragment, useContext, useState } from "react";
@@ -20,7 +25,8 @@ interface IEditDetails {
   userName: string;
   email: string;
   relationshipStatus: string;
-  avatar: string;
+  avatarURL: string;
+  avatarName: string;
 }
 
 const Edit = ({ isOpen, closeModal, data, getProfileData }: IProps) => {
@@ -35,7 +41,8 @@ const Edit = ({ isOpen, closeModal, data, getProfileData }: IProps) => {
     userName: data.userName,
     email: data.email,
     relationshipStatus: data.relationshipStatus,
-    avatar: data.avatar,
+    avatarURL: data.avatarURL,
+    avatarName: data.avatarName,
   };
 
   const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,6 +55,9 @@ const Edit = ({ isOpen, closeModal, data, getProfileData }: IProps) => {
   const handleSubmit = async (values: IEditDetails) => {
     setUpdateButtonDisable(true);
     if (selectedFile) {
+      if (selectedFile.name + authData?.userId !== data.avatarName) {
+        await deleteObject(ref(storage, `userAvatars/${data.avatarName}`));
+      }
       new Compressor(selectedFile, {
         maxWidth: 1000,
         maxHeight: 1000,
@@ -61,7 +71,8 @@ const Edit = ({ isOpen, closeModal, data, getProfileData }: IProps) => {
             console.log("uploaded");
           });
           const url = await getDownloadURL(storageRef);
-          values.avatar = url;
+          values.avatarURL = url;
+          values.avatarName = selectedFile.name + authData?.userId;
           console.log(values);
           axios
             .post("http://localhost:8080/api/updateProfileData", {
@@ -75,7 +86,7 @@ const Edit = ({ isOpen, closeModal, data, getProfileData }: IProps) => {
               if (url) {
                 const copyAuthData = authData;
                 if (copyAuthData) {
-                  copyAuthData.avatar = url;
+                  copyAuthData.avatarURL = url;
                   copyAuthData.userName = values.userName;
                   copyAuthData.email = values.email;
                   setAuthData(copyAuthData);
@@ -149,7 +160,9 @@ const Edit = ({ isOpen, closeModal, data, getProfileData }: IProps) => {
                     {!selectedFilePreview && (
                       <Image
                         src={
-                          data.avatar ? data.avatar : "/images/no-avatar.png"
+                          data.avatarURL
+                            ? data.avatarURL
+                            : "/images/no-avatar.png"
                         }
                         alt=""
                         width={100}

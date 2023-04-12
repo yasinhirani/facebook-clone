@@ -90,7 +90,7 @@ const Feed = () => {
               imageURL: postUrl && postUrl,
               likeCount: 0,
               likedBy: [],
-              avatar: authData?.avatar,
+              avatar: authData?.avatarURL,
             })
             .then((res) => {
               console.log(res.data);
@@ -111,7 +111,7 @@ const Feed = () => {
           imageURL: "",
           likeCount: 0,
           likedBy: [],
-          avatar: authData?.avatar,
+          avatar: authData?.avatarURL,
         })
         .then((res) => {
           console.log(res.data);
@@ -143,7 +143,7 @@ const Feed = () => {
         <div className="flex items-center space-x-6">
           <figure>
             <Image
-              src={authData?.avatar ? authData.avatar : "/images/no-avatar.png"}
+              src={authData?.avatarURL ? authData.avatarURL : "/images/no-avatar.png"}
               width={40}
               height={40}
               className="rounded-full"

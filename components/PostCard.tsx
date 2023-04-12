@@ -4,6 +4,7 @@ import { HandThumbUpIcon as HandThumbUpIconSolid } from "@heroicons/react/24/sol
 import axios from "axios";
 import moment from "moment";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useContext, useState } from "react";
 
 interface IProps {
@@ -60,15 +61,24 @@ const PostCard = ({
   return (
     <div className="bg-white rounded-xl shadow-md p-4">
       <div className="flex items-center space-x-3">
-        <figure>
-          <Image
-            src={avatar ? avatar : "/images/no-avatar.png"}
-            width={40}
-            height={40}
-            className="rounded-full"
-            alt="User"
-          />
-        </figure>
+        <Link
+          href={{
+            pathname: "/userProfile",
+            query: {
+              userId: userId,
+            },
+          }}
+        >
+          <figure>
+            <Image
+              src={avatar ? avatar : "/images/no-avatar.png"}
+              width={40}
+              height={40}
+              className="rounded-full"
+              alt="User"
+            />
+          </figure>
+        </Link>
         <div className="flex flex-col">
           <p className="font-semibold">{name}</p>
           <span className="text-xs text-gray-500 font-medium">

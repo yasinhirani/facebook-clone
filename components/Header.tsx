@@ -59,7 +59,7 @@ const Header = () => {
         >
           <figure>
             <Image
-              src={authData?.avatar ? authData.avatar : "/images/no-avatar.png"}
+              src={authData?.avatarURL ? authData.avatarURL : "/images/no-avatar.png"}
               width={40}
               height={40}
               className="rounded-full w-9 h-9"

@@ -1,15 +1,18 @@
 import { PencilIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Edit from "./Edit";
 import axios from "axios";
 import TimeLine from "./TimeLine";
+import { useRouter } from "next/router";
+import AuthContext from "@/core/context";
 
 interface IProfileData {
   userId: string;
   userName: string;
   email: string;
-  avatar: string;
+  avatarURL: string;
+  avatarName: string;
   coverImage: string;
   followers: Array<string>;
   followings: Array<string>;
@@ -17,6 +20,10 @@ interface IProfileData {
 }
 
 const Profile = () => {
+  const router = useRouter();
+
+  const { authData } = useContext(AuthContext);
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [profileData, setProfileData] = useState<IProfileData | null>(null);
 
@@ -25,11 +32,15 @@ const Profile = () => {
   };
 
   const getProfileData = () => {
-    axios.post("http://localhost:8080/api/profileDetails").then((res) => {
-      if (res.data.success) {
-        setProfileData(res.data.data);
-      }
-    });
+    axios
+      .post("http://localhost:8080/api/profileDetails", {
+        userId: router.query.userId,
+      })
+      .then((res) => {
+        if (res.data.success) {
+          setProfileData(res.data.data);
+        }
+      });
   };
 
   useEffect(() => {
@@ -46,15 +57,15 @@ const Profile = () => {
                 alt=""
                 width={600}
                 height={600}
-                className="w-full h-56 object-cover"
+                className="w-full h-32 sm:h-56 object-cover"
               />
             </figure>
             <div className="flex justify-center transform -translate-y-16">
               <figure>
                 <Image
                   src={
-                    profileData.avatar
-                      ? profileData.avatar
+                    profileData.avatarURL
+                      ? profileData.avatarURL
                       : "/images/no-avatar.png"
                   }
                   alt=""
@@ -69,17 +80,19 @@ const Profile = () => {
                 <h6 className="font-medium text-2xl relative before:absolute before:w-12 before:h-0.5 before:rounded-lg before:bg-black before:-bottom-0.5">
                   About
                 </h6>
-                <button
-                  type="button"
-                  className="flex items-center space-x-2 font-semibold text-primary"
-                  onClick={() => setIsModalOpen(true)}
-                >
-                  <PencilIcon className="w-5 h-5" />
-                  <span>Edit</span>
-                </button>
+                {router.query.userId === authData?.userId && (
+                  <button
+                    type="button"
+                    className="flex items-center space-x-2 font-semibold text-primary"
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    <PencilIcon className="w-5 h-5" />
+                    <span>Edit</span>
+                  </button>
+                )}
               </div>
               <hr />
-              <div className="grid grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-6">
                 <div className="font-medium">
                   <p className="text-gray-500 text-base">Name:</p>
                   <p className="text-lg">{profileData.userName}</p>
@@ -97,7 +110,7 @@ const Profile = () => {
               </div>
             </div>
           </div>
-          <TimeLine />
+          <TimeLine userId={router.query.userId as string} />
         </div>
       )}
       <Edit
@@ -106,7 +119,8 @@ const Profile = () => {
         data={{
           userName: profileData?.userName ? profileData.userName : "",
           email: profileData?.email ? profileData.email : "",
-          avatar: profileData?.avatar ? profileData.avatar : "",
+          avatarURL: profileData?.avatarURL ? profileData.avatarURL : "",
+          avatarName: profileData?.avatarName ? profileData.avatarName : "",
           relationshipStatus: profileData?.relationshipStatus
             ? profileData.relationshipStatus
             : "",
