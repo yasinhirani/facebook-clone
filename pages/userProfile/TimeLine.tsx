@@ -11,19 +11,28 @@ interface IPosts {
   likeCount: number;
   likedBy: [];
   createdAt: Date;
+  avatar: string;
 }
 
-const TimeLine = () => {
+interface IProps {
+  userId: string;
+}
+
+const TimeLine = ({ userId }: IProps) => {
   const [profileTimeline, setProfileTimeline] = useState<IPosts[] | null>(null);
 
   const getProfileTimeline = () => {
-    axios.get("http://localhost:8080/api/profileTimeline").then((res) => {
-      if (res.data.success) {
-        setProfileTimeline(res.data.data);
-      } else {
-        console.log(res.data.message);
-      }
-    });
+    axios
+      .post("http://localhost:8080/api/profileTimeline", {
+        userId: userId,
+      })
+      .then((res) => {
+        if (res.data.success) {
+          setProfileTimeline(res.data.data);
+        } else {
+          console.log(res.data.message);
+        }
+      });
   };
 
   useEffect(() => {

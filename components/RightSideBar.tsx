@@ -9,7 +9,7 @@ interface IPeople {
   userId: string;
   userName: string;
   email: string;
-  avatar: string;
+  avatarURL: string;
   followers: Array<string>;
 }
 
@@ -42,7 +42,7 @@ const RightSideBar = () => {
 };
 
 const FriendList = ({
-  data: { avatar, userName, userId, followers },
+  data: { avatarURL, userName, userId, followers },
 }: IProps) => {
   const { authData } = useContext(AuthContext);
   const [isRequestSent, setIsRequestSent] = useState<boolean>(
@@ -57,7 +57,7 @@ const FriendList = ({
     <div className="flex items-center space-x-5">
       <div className="flex items-center space-x-3">
         <Image
-          src={avatar ? avatar : "/images/no-avatar.png"}
+          src={avatarURL ? avatarURL : "/images/no-avatar.png"}
           alt={userName}
           width={40}
           height={40}

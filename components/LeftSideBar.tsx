@@ -23,7 +23,7 @@ const LeftSideBar = () => {
       <div className="flex items-center space-x-3">
         <figure>
           <Image
-            src={authData?.avatar ? authData.avatar : "/images/no-avatar.png"}
+            src={authData?.avatarURL ? authData.avatarURL : "/images/no-avatar.png"}
             width={30}
             height={30}
             className="rounded-full"

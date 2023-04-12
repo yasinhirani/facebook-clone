@@ -47,7 +47,7 @@ const Login = ({ setLoginVisible }: IProps) => {
         initialValues={initialValues}
         onSubmit={(values) => handleSubmit(values)}
       >
-        {() => {
+        {({ handleBlur, handleChange, values }) => {
           return (
             <Form className="w-full flex flex-col space-y-5">
               <Field
@@ -57,6 +57,9 @@ const Login = ({ setLoginVisible }: IProps) => {
                 placeholder="Email"
                 className="w-full border border-gray-300 rounded-lg px-4 py-3 bg-transparent outline-none"
                 autoComplete="off"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.email}
               />
               <Field
                 name="password"
@@ -65,6 +68,9 @@ const Login = ({ setLoginVisible }: IProps) => {
                 placeholder="Password"
                 className="w-full border border-gray-300 rounded-lg px-4 py-3 bg-transparent outline-none"
                 autoComplete="off"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.password}
               />
               <button
                 type="submit"
