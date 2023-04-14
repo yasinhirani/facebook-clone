@@ -1,8 +1,12 @@
 import Image from "next/image";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import storiesData from "./StoriesData";
 import StoryCard from "./StoryCard";
-import { CameraIcon, VideoCameraIcon } from "@heroicons/react/24/solid";
+import {
+  CameraIcon,
+  VideoCameraIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/solid";
 import { FaceSmileIcon } from "@heroicons/react/24/outline";
 import PostCard from "./PostCard";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
@@ -32,6 +36,9 @@ const Feed = () => {
   const [whatsOnYourMind, setWhatsOnYourMind] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFilePreview, setSelectedFilePreview] = useState<string>("");
+  const [disableState, setDisableState] = useState<boolean>(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const postButtonDisabledState = useMemo(
     () => ({
@@ -43,7 +50,7 @@ const Feed = () => {
 
   const getAllPosts = () => {
     if (authData) {
-      axios.get("http://localhost:8080/api/getPosts").then((res) => {
+      axios.get("/api/getPosts").then((res) => {
         setPosts(res.data);
       });
     }
@@ -51,7 +58,7 @@ const Feed = () => {
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWhatsOnYourMind(e.target.value);
-    if (e.target.value !== "") {
+    if (e.target.value !== "" || selectedFilePreview) {
       postButtonDisabledState.setPostButtonDisabled(false);
     } else {
       postButtonDisabledState.setPostButtonDisabled(true);
@@ -63,10 +70,13 @@ const Feed = () => {
       const fileUrl = URL.createObjectURL(e.target.files[0]);
       setSelectedFilePreview(fileUrl);
       setSelectedFile(e.target.files[0]);
+      postButtonDisabledState.setPostButtonDisabled(false);
     }
   };
 
   const handleClick = async () => {
+    setDisableState(true);
+    postButtonDisabledState.setPostButtonDisabled(true);
     let postUrl = "";
     const storageRef = ref(
       storage,
@@ -83,7 +93,7 @@ const Feed = () => {
           });
           postUrl = await getDownloadURL(storageRef);
           await axios
-            .post("http://localhost:8080/api/createPost", {
+            .post("/api/createPost", {
               name: authData?.userName,
               content: whatsOnYourMind,
               postId: uuidv4(),
@@ -91,6 +101,7 @@ const Feed = () => {
               likeCount: 0,
               likedBy: [],
               avatar: authData?.avatarURL,
+              postName: `${selectedFile.name}${authData?.userId}`,
             })
             .then((res) => {
               console.log(res.data);
@@ -98,13 +109,14 @@ const Feed = () => {
               setSelectedFile(null);
               setSelectedFilePreview("");
               postButtonDisabledState.setPostButtonDisabled(true);
+              setDisableState(false);
               getAllPosts();
             });
         },
       });
     } else {
       await axios
-        .post("http://localhost:8080/api/createPost", {
+        .post("/api/createPost", {
           name: authData?.userName,
           content: whatsOnYourMind,
           postId: uuidv4(),
@@ -119,6 +131,7 @@ const Feed = () => {
           setSelectedFile(null);
           setSelectedFilePreview("");
           postButtonDisabledState.setPostButtonDisabled(true);
+          setDisableState(false);
           getAllPosts();
         });
     }
@@ -143,7 +156,11 @@ const Feed = () => {
         <div className="flex items-center space-x-6">
           <figure>
             <Image
-              src={authData?.avatarURL ? authData.avatarURL : "/images/no-avatar.png"}
+              src={
+                authData?.avatarURL
+                  ? authData.avatarURL
+                  : "/images/no-avatar.png"
+              }
               width={40}
               height={40}
               className="rounded-full"
@@ -161,7 +178,7 @@ const Feed = () => {
           />
         </div>
         {selectedFile && (
-          <figure className="w-full h-full">
+          <figure className="w-full h-full relative">
             <Image
               className="w-full h-auto sm:h-96 object-contain"
               src={selectedFilePreview}
@@ -169,6 +186,23 @@ const Feed = () => {
               width={200}
               height={200}
             />
+            <figcaption>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedFile(null);
+                  setSelectedFilePreview("");
+                  if (!whatsOnYourMind) {
+                    postButtonDisabledState.setPostButtonDisabled(true);
+                  }
+                  if (fileInputRef.current) {
+                    fileInputRef.current.value = "";
+                  }
+                }}
+              >
+                <XMarkIcon className="w-5 h-5 absolute top-2 right-2" />
+              </button>
+            </figcaption>
           </figure>
         )}
         <hr />
@@ -188,6 +222,7 @@ const Feed = () => {
             <CameraIcon className="w-5 h-5 text-green-500" />
             <span className="font-semibold hidden xs:inline">Photo/Video</span>
             <input
+              ref={fileInputRef}
               className="hidden"
               onChange={(e) => handleFileSelectChange(e)}
               type="file"
@@ -212,14 +247,20 @@ const Feed = () => {
           onClick={() => handleClick()}
           className="bg-primary rounded-lg w-full mt-5 text-white p-2 font-semibold text-lg disabled:bg-opacity-60 disabled:cursor-not-allowed"
         >
-          Post
+          {disableState ? "Posting..." : "Post"}
         </button>
       </div>
       {/* End what's on your mind */}
       {/* Start Posts */}
       <div className="flex flex-col space-y-6">
         {posts.map((post, index) => {
-          return <PostCard key={Math.random()} postData={post} />;
+          return (
+            <PostCard
+              key={Math.random()}
+              postData={post}
+              getPosts={getAllPosts}
+            />
+          );
         })}
       </div>
       {/* End Posts */}

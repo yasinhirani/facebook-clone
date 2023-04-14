@@ -20,7 +20,7 @@ interface IProps {
 const RightSideBar = () => {
   const [people, setPeople] = useState<IPeople[] | null>(null);
   const getPeople = () => {
-    axios.get("http://localhost:8080/api/getPeople").then((res) => {
+    axios.get("/api/getPeople").then((res) => {
       setPeople(res.data);
     });
   };
@@ -51,7 +51,7 @@ const FriendList = ({
 
   const followFriend = () => {
     setIsRequestSent((prev) => !prev);
-    axios.put("http://localhost:8080/api/follow", { userId });
+    axios.put("/api/follow", { userId });
   };
   return (
     <div className="flex items-center space-x-5">

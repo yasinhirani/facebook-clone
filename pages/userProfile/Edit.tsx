@@ -75,7 +75,7 @@ const Edit = ({ isOpen, closeModal, data, getProfileData }: IProps) => {
           values.avatarName = selectedFile.name + authData?.userId;
           console.log(values);
           axios
-            .post("http://localhost:8080/api/updateProfileData", {
+            .post("/api/updateProfileData", {
               ...values,
             })
             .then((res) => {
@@ -101,7 +101,7 @@ const Edit = ({ isOpen, closeModal, data, getProfileData }: IProps) => {
       });
     } else {
       axios
-        .post("http://localhost:8080/api/updateProfileData", {
+        .post("/api/updateProfileData", {
           ...values,
         })
         .then((res) => {

@@ -33,7 +33,7 @@ const Profile = () => {
 
   const getProfileData = () => {
     axios
-      .post("http://localhost:8080/api/profileDetails", {
+      .post("/api/profileDetails", {
         userId: router.query.userId,
       })
       .then((res) => {
