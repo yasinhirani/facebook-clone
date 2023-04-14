@@ -23,7 +23,7 @@ const TimeLine = ({ userId }: IProps) => {
 
   const getProfileTimeline = () => {
     axios
-      .post("http://localhost:8080/api/profileTimeline", {
+      .post("/api/profileTimeline", {
         userId: userId,
       })
       .then((res) => {
