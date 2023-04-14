@@ -26,6 +26,7 @@ interface IPosts {
   likedBy: [];
   createdAt: Date;
   avatar: string;
+  postName: string;
 }
 
 const Feed = () => {
