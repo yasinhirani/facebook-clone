@@ -1,7 +1,7 @@
 import { Header, LeftSideBar } from "../../components/index";
 import { useRouter } from "next/router";
 import React from "react";
-import Profile from "./Profile";
+import { Profile } from "../../components/index";
 
 const UserProfile = () => {
   const router = useRouter();
