@@ -38,11 +38,11 @@ const Edit = ({ isOpen, closeModal, data, getProfileData }: IProps) => {
     useState<boolean>(false);
 
   const initialValues: IEditDetails = {
-    userName: data.userName,
-    email: data.email,
-    relationshipStatus: data.relationshipStatus,
-    avatarURL: data.avatarURL,
-    avatarName: data.avatarName,
+    userName: data.userName ? data.userName : "",
+    email: data.email ? data.email : "",
+    relationshipStatus: data.relationshipStatus ? data.relationshipStatus : "",
+    avatarURL: data.avatarURL ? data.avatarURL : "",
+    avatarName: data.avatarName ? data.avatarName : "",
   };
 
   const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
