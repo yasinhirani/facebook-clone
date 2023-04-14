@@ -83,7 +83,7 @@ const Edit = ({ isOpen, closeModal, data, getProfileData }: IProps) => {
               setUpdateButtonDisable(false);
               closeModal();
               getProfileData();
-              if (url) {
+              if (url && authData) {
                 const copyAuthData = authData;
                 if (copyAuthData) {
                   copyAuthData.avatarURL = url;
@@ -109,7 +109,7 @@ const Edit = ({ isOpen, closeModal, data, getProfileData }: IProps) => {
           setUpdateButtonDisable(false);
           closeModal();
           const copyAuthData = authData;
-          if (copyAuthData) {
+          if (copyAuthData && authData) {
             copyAuthData.userName = values.userName;
             copyAuthData.email = values.email;
             setAuthData(copyAuthData);
@@ -197,7 +197,7 @@ const Edit = ({ isOpen, closeModal, data, getProfileData }: IProps) => {
                   initialValues={initialValues}
                   onSubmit={(values) => handleSubmit(values)}
                 >
-                  {({ values }) => {
+                  {({ values, handleChange, handleBlur }) => {
                     return (
                       <Form className="flex flex-col space-y-5">
                         <Field
@@ -207,6 +207,8 @@ const Edit = ({ isOpen, closeModal, data, getProfileData }: IProps) => {
                           placeholder="User Name"
                           className="w-full border border-gray-300 rounded-lg px-4 py-3 bg-transparent outline-none"
                           autoComplete="off"
+                          onChange={handleChange}
+                          onBlur={handleBlur}
                           value={values.userName}
                         />
                         <Field
@@ -216,6 +218,8 @@ const Edit = ({ isOpen, closeModal, data, getProfileData }: IProps) => {
                           placeholder="Email"
                           className="w-full border border-gray-300 rounded-lg px-4 py-3 bg-transparent outline-none"
                           autoComplete="off"
+                          onChange={handleChange}
+                          onBlur={handleBlur}
                           value={values.email}
                         />
                         <Field
@@ -225,6 +229,8 @@ const Edit = ({ isOpen, closeModal, data, getProfileData }: IProps) => {
                           placeholder="Single, Taken, Complicated, etc..."
                           className="w-full border border-gray-300 rounded-lg px-4 py-3 bg-transparent outline-none"
                           autoComplete="off"
+                          onChange={handleChange}
+                          onBlur={handleBlur}
                           value={values.relationshipStatus}
                         />
                         <button
