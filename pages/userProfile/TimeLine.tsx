@@ -12,6 +12,7 @@ interface IPosts {
   likedBy: [];
   createdAt: Date;
   avatar: string;
+  postName: string;
 }
 
 interface IProps {
@@ -44,7 +45,7 @@ const TimeLine = ({ userId }: IProps) => {
       <div className="flex flex-col space-y-6">
         {profileTimeline &&
           profileTimeline.map((timeline) => {
-            return <PostCard key={Math.random()} postData={timeline} />;
+            return <PostCard key={Math.random()} postData={timeline} getPosts={getProfileTimeline} />;
           })}
       </div>
     </div>
