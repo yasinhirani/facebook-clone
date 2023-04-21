@@ -19,7 +19,7 @@ const LeftSideBar = () => {
 
   const router = useRouter();
   return (
-    <div className="flex flex-col space-y-8 w-6 sm:w-36 md:44 lg:w-52 sticky top-[104px] self-start flex-shrink-0">
+    <div className="hidden sm:flex flex-col space-y-8 w-6 sm:w-36 md:44 lg:w-52 sticky top-[104px] self-start flex-shrink-0">
       <div className="flex items-center space-x-3">
         <figure>
           <Image

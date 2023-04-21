@@ -1,8 +1,10 @@
+import toastConfig from "@/core/components/toast.config";
 import RegisterValidation from "@/core/validation/register.validation";
 import axios from "axios";
 import { Field, Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 interface ILoginValues {
   userName: string;
@@ -38,10 +40,11 @@ const Register = ({ setLoginVisible }: IProps) => {
       })
       .then((res) => {
         if (res.data.success) {
+          toast.success(res.data.message, toastConfig);
           setLoginVisible(true);
           setDisableState(false);
         } else {
-          console.log(res.data.message);
+          toast.error(res.data.message, toastConfig);
         }
       });
   };

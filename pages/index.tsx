@@ -1,32 +1,10 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext } from "react";
 import { Header, Homepage } from "../components/index";
 import Head from "next/head";
-import { useRouter } from "next/router";
-import { IAuthData } from "@/core/model/auth.model";
 import AuthContext from "@/core/context";
-import Interceptor from "@/core/service/interceptor";
 
 export default function Home() {
   const { authData } = useContext(AuthContext);
-  // const [authData, setAuthData] = useState<IAuthData | null>(null);
-  // const router = useRouter();
-
-  // const AuthState = useMemo(
-  //   () => ({
-  //     authData,
-  //     setAuthData,
-  //   }),
-  //   [authData]
-  // );
-
-  // useEffect(() => {
-  //   if (!localStorage.authData) {
-  //     router.push("/getStarted");
-  //   } else {
-  //     setAuthData(JSON.parse(localStorage.getItem("authData") as string));
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
   return (
     <>
       <Head>
