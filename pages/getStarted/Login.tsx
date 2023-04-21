@@ -1,9 +1,11 @@
+import toastConfig from "@/core/components/toast.config";
 import AuthContext from "@/core/context";
 import LoginValidation from "@/core/validation/login.validation";
 import axios from "axios";
 import { Field, Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import React, { useContext, useState } from "react";
+import { toast } from "react-toastify";
 
 interface ILoginValues {
   email: string;
@@ -36,13 +38,14 @@ const Login = ({ setLoginVisible }: IProps) => {
       })
       .then((res) => {
         if (res.data.success) {
+          toast.success(res.data.message, toastConfig);
           setAuthData(res.data.authData);
           localStorage.setItem("authData", JSON.stringify(res.data.authData));
           router.push("/");
           setDisableState(false);
-          console.log(res.data.message);
         } else {
-          console.log(res.data.message);
+          toast.error(res.data.message, toastConfig);
+          setDisableState(false);
         }
       });
   };

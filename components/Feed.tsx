@@ -15,6 +15,8 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import AuthContext from "@/core/context";
 import Compressor from "compressorjs";
+import { toast } from "react-toastify";
+import toastConfig from "@/core/components/toast.config";
 
 interface IPosts {
   name: string;
@@ -105,7 +107,7 @@ const Feed = () => {
               postName: `${selectedFile.name}${authData?.userId}`,
             })
             .then((res) => {
-              console.log(res.data);
+              toast.success("Posted Successfully", toastConfig);
               setWhatsOnYourMind("");
               setSelectedFile(null);
               setSelectedFilePreview("");
@@ -127,7 +129,7 @@ const Feed = () => {
           avatar: authData?.avatarURL,
         })
         .then((res) => {
-          console.log(res.data);
+          toast.success("Posted Successfully", toastConfig);
           setWhatsOnYourMind("");
           setSelectedFile(null);
           setSelectedFilePreview("");

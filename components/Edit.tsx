@@ -1,4 +1,5 @@
 import { storage } from "@/components/Firebase";
+import toastConfig from "@/core/components/toast.config";
 import AuthContext from "@/core/context";
 import { Transition, Dialog } from "@headlessui/react";
 import { CameraIcon, XMarkIcon } from "@heroicons/react/24/solid";
@@ -13,6 +14,7 @@ import {
 import { Field, Form, Formik } from "formik";
 import Image from "next/image";
 import React, { Fragment, useContext, useState } from "react";
+import { toast } from "react-toastify";
 
 interface IProps {
   isOpen: boolean;
@@ -79,7 +81,7 @@ const Edit = ({ isOpen, closeModal, data, getProfileData }: IProps) => {
               ...values,
             })
             .then((res) => {
-              console.log(res.data.message);
+              toast.success(res.data.message, toastConfig);
               setUpdateButtonDisable(false);
               closeModal();
               getProfileData();
@@ -105,7 +107,7 @@ const Edit = ({ isOpen, closeModal, data, getProfileData }: IProps) => {
           ...values,
         })
         .then((res) => {
-          console.log(res.data.message);
+          toast.success(res.data.message, toastConfig);
           setUpdateButtonDisable(false);
           closeModal();
           const copyAuthData = authData;

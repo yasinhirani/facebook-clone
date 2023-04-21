@@ -105,7 +105,11 @@ const Profile = () => {
                   <p className="text-gray-500 text-base">
                     Relationship status:
                   </p>
-                  <p className="text-lg">{profileData.relationshipStatus}</p>
+                  <p className="text-lg">
+                    {profileData.relationshipStatus
+                      ? profileData.relationshipStatus
+                      : "-"}
+                  </p>
                 </div>
               </div>
             </div>

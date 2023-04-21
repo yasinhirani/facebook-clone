@@ -11,6 +11,8 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useContext, useState } from "react";
 import { storage } from "./Firebase";
+import { toast } from "react-toastify";
+import toastConfig from "@/core/components/toast.config";
 
 interface IProps {
   postData: {
@@ -80,7 +82,7 @@ const PostCard = ({
         .then((res) => {
           if (res.data.success) {
             setIsDeleting(false);
-            console.log(res.data);
+            toast.success("Deleted Successfully", toastConfig);
             getPosts();
           }
         });
