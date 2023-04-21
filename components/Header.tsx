@@ -1,6 +1,9 @@
 import Image from "next/image";
 import React, { useContext } from "react";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
+import {
+  ArrowLeftOnRectangleIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/24/solid";
 import {
   HomeIcon,
   FlagIcon,
@@ -10,12 +13,15 @@ import {
 } from "@heroicons/react/24/outline";
 import AuthContext from "@/core/context";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const Header = () => {
-  const { authData } = useContext(AuthContext);
+  const { authData, setAuthData } = useContext(AuthContext);
+
+  const router = useRouter();
   return (
     <div className="w-full fixed top-0 h-16 bg-white shadow-md z-10">
-      <div className="w-full max-w-[80rem] mx-auto px-6 py-3 flex justify-between items-center">
+      <div className="w-full max-w-[80rem] mx-auto px-6 py-3 flex justify-between items-center space-x-5">
         {/* Start Brand Logo and search bar */}
         <div className="flex items-center space-x-5">
           <Link href="/">
@@ -50,26 +56,43 @@ const Header = () => {
         </div>
         {/* End NavLinks */}
         {/* Start Profile */}
-        <Link
-          href={{
-            pathname: "/userProfile",
-            query: { userId: authData?.userId },
-          }}
-          className="flex items-center space-x-3"
-        >
-          <figure>
-            <Image
-              src={authData?.avatarURL ? authData.avatarURL : "/images/no-avatar.png"}
-              width={40}
-              height={40}
-              className="rounded-full w-9 h-9"
-              alt="User"
-            />
-          </figure>
-          <h5 className="font-semibold hidden lg:block">
-            {authData?.userName}
-          </h5>
-        </Link>
+        <div className="flex items-center space-x-3 sm:space-x-0">
+          <Link
+            href={{
+              pathname: "/userProfile",
+              query: { userId: authData?.userId },
+            }}
+            className="flex items-center space-x-3"
+          >
+            <figure>
+              <Image
+                src={
+                  authData?.avatarURL
+                    ? authData.avatarURL
+                    : "/images/no-avatar.png"
+                }
+                width={40}
+                height={40}
+                className="rounded-full w-9 h-9 min-w-[36px]"
+                alt="User"
+              />
+            </figure>
+            <h5 className="font-semibold hidden lg:block">
+              {authData?.userName}
+            </h5>
+          </Link>
+          <button
+            onClick={() => {
+              setAuthData(null);
+              localStorage.removeItem("authData");
+              router.push("/getStarted");
+            }}
+            type="button"
+            className="block sm:hidden"
+          >
+            <ArrowLeftOnRectangleIcon className="w-6 h-6 text-primary" />
+          </button>
+        </div>
         {/* End Profile */}
       </div>
     </div>
